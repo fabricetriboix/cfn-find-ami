@@ -10,8 +10,12 @@ Resources:
     Properties:
       ServiceToken: !Ref FindAmiLambdaArn
       Region: eu-west-1
-      OwnerId: "099720109477"  # Canonical
+      Debug: true
+      Architecture: x86_64
       Name: "*bionic*"
+      OwnerId: "099720109477"  # Canonical
+      RootDeviceType: ebs
+      VirtualizationType: hvm
 
 Outputs:
   Id:
@@ -20,3 +24,6 @@ Outputs:
   Name:
     Description: Name of found AMI
     Value: !GetAtt AmiInfo.Name
+  Description:
+    Description: Description of found AMI
+    Value: !GetAtt AmiInfo.Description
