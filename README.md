@@ -8,24 +8,25 @@ Install the lambda function
 ---------------------------
 
 Create an IAM policy using the `find-ami-lambda-policy.json` file.
-Create an IAM role for the lambda function using the above policy.
+Create an IAM role for the lambda function using the above policy;
+name this role "find-ami-lambda-role".
 
-Then run the following commands in a bash shell:
+Then run the following commands in a bash shell, where "123456789012"
+is your AWS account ID:
 
 ```bash
-$ go build find-ami.go
-$ zip find-ami.zip find-ami
-$ aws --region YOUR-REGION lambda create-function \
-    --function-name find-ami --memory 128 \
-    --role arn:aws:iam::281582310019:role/find-ami-lambda-role \
-    --runtime go1.x --zip-file fileb://./find-ami.zip \
-    --handler find-ami
+$ ./package.sh
+$ aws --profile YOUR_PROFILE lambda create-function \
+    --function-name find-ami --memory 128 --timeout 30 \
+    --role arn:aws:iam::123456789012:role/find-ami-lambda-role \
+    --runtime python3.7 --zip-file fileb://./find-ami.zip \
+    --handler find-ami.handler
 ```
 
 "Call" the lambda function from a CloudFormation template
 ---------------------------------------------------------
 
-Checkout the `test-cfn-find-ami.yml` for an example.
+Checkout the `test-cfn-find-ami.yml` file for an example.
 
 The following `Properties` can be set in the custom resource:
  - `ServiceToken`: Set to the ARN of the above lambda function
@@ -44,7 +45,7 @@ The following `Properties` can be set in the custom resource:
  - `VirtualizationType`: Filter on the virtualization type; can be
    "hvm" or "paravirtual"; if not set, this defaults to "hvm"
 
-The lambda function will filter AMIs that match the parameters you
+The Lambda function will filter AMIs that match the parameters you
 provided, and will return the most recent image. The following output
 parameters are available:
  - `Id`: The AMI id of the found AMI
