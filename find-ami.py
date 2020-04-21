@@ -104,5 +104,8 @@ def send_response(event, success: bool, msg="", data={}):
         'LogicalResourceId': event['LogicalResourceId'],
         'Data': data
     }
-    data = json.dumps(response)
-    requests.put(event['ResponseURL'], data=data)
+    headers = {
+        'Content-Type': ""
+    }
+    body = json.dumps(response)
+    requests.put(event['ResponseURL'], headers=headers, data=body)
